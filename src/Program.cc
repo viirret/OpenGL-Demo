@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 
 Program::Program() : 
-	running(true), window(""), scene(),
+	running(true), window(""),
 	camera(
 			glm::lookAt(
 			glm::vec3(0, 0, 10),
@@ -15,7 +15,8 @@ Program::Program() :
 			4.0f / 3.0f,
 			0.1f,
 			100.0f
-	))
+	)),
+	scene(camera)
 {
 	// give a nice background
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
@@ -69,7 +70,7 @@ void Program::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	scene.update(camera);
+	scene.update();
 
 	// main SDL rendering
 	SDL_GL_SwapWindow(window.window);
@@ -82,6 +83,7 @@ void Program::trackEvents()
 		if(e.type == SDL_QUIT)
 			running = false;
 
+		// movement with WASD keys
 		else if(e.type == SDL_KEYDOWN)
 		{
 			switch(e.key.keysym.sym)
@@ -95,6 +97,8 @@ void Program::trackEvents()
 					velocity.z -= 0.001f * elapsedTime; 
 					isMoving = true;
 					break;
+
+				// this is the correct order of these but it still feels like it's going the other ws going the other way
 				case SDLK_a: 
 					velocity.x -= 0.001f * elapsedTime;
 					isMoving = true;

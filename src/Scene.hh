@@ -6,8 +6,15 @@
 class Scene
 {
 public:
-	Scene();
+	Scene(Camera& camera);
 	~Scene();
-	void update(Camera& camera);
-	Cube cube;
+	void update();
+private:
+	Camera& camera;
+	//std::vector<Cube> floor;
+
+	// random test cubes
+	//Cube cube;
+	Cube cube2;
 };
+

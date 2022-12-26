@@ -12,6 +12,6 @@ Material::Material(const char* vertexShader, const char* fragmentShader)
 	glUseProgram(shader.ID);
 }
 
-unsigned int Material::getmmID() const { return mmID; }
-unsigned int Material::getvmID() const { return vmID; }
-unsigned int Material::getpmID() const { return pmID; }
+const unsigned int& Material::getmmID() const { return mmID; }
+const unsigned int& Material::getvmID() const { return vmID; }
+const unsigned int& Material::getpmID() const { return pmID; }

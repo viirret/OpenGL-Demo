@@ -2,7 +2,6 @@
 
 #include "Shader.hh"
 #include "Window.hh"
-#include "Cube.hh"
 #include "Camera.hh"
 #include "Scene.hh"
 
@@ -19,8 +18,8 @@ private:
 
 	bool running;
 	Window window;
-	Scene scene;
 	Camera camera;
+	Scene scene;
 
 	SDL_Event e;
 

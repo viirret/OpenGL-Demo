@@ -6,9 +6,9 @@ class Material
 {
 public:
 	Material(const char* vertexShader, const char* fragmentShader);
-	unsigned int getmmID() const;
-	unsigned int getvmID() const;
-	unsigned int getpmID() const;
+	const unsigned int& getmmID() const;
+	const unsigned int& getvmID() const;
+	const unsigned int& getpmID() const;
 
 private:
 	Shader shader;

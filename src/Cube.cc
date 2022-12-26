@@ -1,53 +1,85 @@
 #include "Cube.hh"
 
 #include <GL/glew.h>
-
-#include <vector>
-
-Cube::Cube(std::vector<float>&& vertexBufferData)
-{
-	create(vertexBufferData);
-}
-
-Cube::Cube(std::vector<float>& vertexBufferData)
-{
-	create(vertexBufferData);
-}
-
-Cube::Cube() 
-{ 
-	create(standardVertexBufferData); 
-}
-
-Cube::Cube(float offset, int axel)
-{
-	auto copy = standardVertexBufferData;
-
-	for(int i = 0; i < copy.size(); i++)
-		if(i % axel == 0)
-			copy[i] += offset;
-
-	create(copy);
-}
-
-void Cube::render(const std::function<void()>& f, Camera& camera)
-{
-	f();
-
-	model = tra * rot;
 	
-	glUniformMatrix4fv(Mesh::material.getmmID(), 1, GL_FALSE, &model[0][0]);
+Cube::Cube() : Mesh()
+{
+	auto data = createVertexBufferData();
+	create(data, rainbowColorBufferData);
+}
 
-	// this is very hacky fix
-	// I'll get rid of this in future, but this was the easies to just get working
-	glUniformMatrix4fv(Mesh::material.getvmID(), 1, GL_FALSE, &camera.view[0][0]);
-	glUniformMatrix4fv(Mesh::material.getpmID(), 1, GL_FALSE, &camera.projection[0][0]);
+// create cube with color
+Cube::Cube(float color) : Mesh()
+{
+	auto vertexData = createVertexBufferData();
 
-	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	std::vector<float> colorData;
+
+	for(int i = 0; i < 109; i++)
+		colorData.push_back(color);
+
+	create(vertexData, colorData);
+}
+
+std::vector<float> Cube::createVertexBufferData()
+{ 
+	std::vector<float> vertexData
+	{
+		-1.0f,-1.0f,-1.0f,
+		-1.0f,-1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f,-1.0f,
+
+		-1.0f,-1.0f,-1.0f,
+		-1.0f, 1.0f,-1.0f,
+		1.0f,-1.0f, 1.0f,
+		-1.0f,-1.0f,-1.0f,
+
+		1.0f,-1.0f,-1.0f,
+		1.0f, 1.0f,-1.0f,
+		1.0f,-1.0f,-1.0f,
+		-1.0f,-1.0f,-1.0f,
+	
+		-1.0f,-1.0f,-1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f,-1.0f,
+		1.0f,-1.0f, 1.0f,
+
+		-1.0f,-1.0f, 1.0f,
+		-1.0f,-1.0f,-1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f,-1.0f, 1.0f,
+
+		1.0f,-1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		1.0f,-1.0f,-1.0f,
+		1.0f, 1.0f,-1.0f,
+
+		1.0f,-1.0f,-1.0f,
+		1.0f, 1.0f, 1.0f,
+		1.0f,-1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+
+		1.0f, 1.0f,-1.0f,
+		-1.0f, 1.0f,-1.0f,
+		1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f,-1.0f,
+
+		-1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, -1.0f
+	};
+	
+	return vertexData;
 }
 
 void Cube::create(std::vector<float>& vertexBufferData)
+{
+	create(vertexBufferData, rainbowColorBufferData);
+}	
+
+void Cube::create(std::vector<float>& vertexBufferData, std::vector<float>& colorBufferData)
 {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -62,7 +94,7 @@ void Cube::create(std::vector<float>& vertexBufferData)
 	glGenBuffers(1, &vcb);
 	glBindBuffer(GL_ARRAY_BUFFER, vcb);
 
-	glBufferData(GL_ARRAY_BUFFER, sizeof(colorBufferData), colorBufferData, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, colorBufferData.size() * sizeof(std::vector<float>), &colorBufferData[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -75,5 +107,4 @@ void Cube::create(std::vector<float>& vertexBufferData)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
-
 
