@@ -5,7 +5,7 @@ Camera::Camera(glm::mat4 view, glm::mat4 projection)
 {
 }
 
-void Camera::setView(glm::mat4 &view)
+void Camera::setView(glm::mat4& view)
 {
 	this->view = view;
 }

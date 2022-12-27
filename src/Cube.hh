@@ -12,6 +12,8 @@ public:
 	Cube();
 	Cube(float color);
 
+	void render(Camera& camera) override;
+
 private:
 
 	std::vector<float> createVertexBufferData();

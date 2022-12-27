@@ -1,7 +1,7 @@
 #include "Transform.hh"
 
-Transform::Transform(glm::mat4& model, glm::mat4& rot, glm::mat4& tra)
-	: model(model), rot(rot), tra(tra)
+Transform::Transform()
+	: model(glm::mat4(1)), rot(glm::mat4(1)), tra(glm::mat4(1))
 {
 }
 

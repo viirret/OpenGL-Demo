@@ -108,3 +108,15 @@ void Cube::create(std::vector<float>& vertexBufferData, std::vector<float>& colo
 	glBindVertexArray(0);
 }
 
+void Cube::render(Camera& camera)
+{
+	glUniformMatrix4fv(material.getmmID(), 1, GL_FALSE, &transform.getModel()[0][0]);
+	glUniformMatrix4fv(material.getvmID(), 1, GL_FALSE, &camera.view[0][0]);
+	glUniformMatrix4fv(material.getpmID(), 1, GL_FALSE, &camera.projection[0][0]);
+
+	// bind the VAO
+	glBindVertexArray(vao);
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
