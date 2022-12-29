@@ -4,16 +4,12 @@
 
 Material::Material(const char* vertexShader, const char* fragmentShader)
 	: shader(vertexShader, fragmentShader),
-
-	mmID(glGetUniformLocation(shader.ID, "mm")),
-	vmID(glGetUniformLocation(shader.ID, "vm")),
-	pmID(glGetUniformLocation(shader.ID, "pm")),
-	color(glGetUniformLocation(shader.ID, "color"))
+	color(glGetUniformLocation(shader.ID, "color")),
+	mvp(glGetUniformLocation(shader.ID, "mvp"))
 {
 	glUseProgram(shader.ID);
 }
 
-const unsigned int& Material::getmmID() const { return mmID; }
-const unsigned int& Material::getvmID() const { return vmID; }
-const unsigned int& Material::getpmID() const { return pmID; }
 const unsigned int& Material::getColor() const { return color; }
+
+void Material::use() { glUseProgram(shader.ID); }

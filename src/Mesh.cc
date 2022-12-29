@@ -2,17 +2,35 @@
 
 #include <iostream>
 
-Mesh::Mesh()
+Mesh::Mesh(const glm::vec3& color)
 	: 	material("../shaders/vertex.vert", "../shaders/frag.frag"),
 		transform(),
-		objLoader()
+		objLoader(),
+		color(color)
 {
 }
+
 
 Mesh::Mesh(const std::string& path)
 	: 	material("../shaders/vertex.vert", "../shaders/frag.frag"),
 		transform(),
-		objLoader(path)
+		objLoader(path),
+		color(1.0f, 1.0f, 1.0f)
+{
+	createObject();
+}
+
+
+Mesh::Mesh(const std::string& path, const glm::vec3& color)
+	: 	material("../shaders/vertex.vert", "../shaders/frag.frag"),
+		transform(),
+		objLoader(path),
+		color(color)
+{
+	createObject();
+}
+
+void Mesh::createObject()
 {
 	// get the vertices, normals, texture coordinates, and indices from the OBJ file.
 	const std::vector<glm::vec3>& vertices = objLoader.getVertices();
@@ -30,19 +48,19 @@ Mesh::Mesh(const std::string& path)
 	glEnableVertexAttribArray(0);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_STATIC_DRAW);
 
-	unsigned int normalVBO;
-	glGenBuffers(1, &normalVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(2);
-	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
-
 	unsigned int uvVBO;
 	glGenBuffers(1, &uvVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, uvVBO);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), uvs.data(), GL_STATIC_DRAW);
+
+	unsigned int normalVBO;
+	glGenBuffers(1, &normalVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(2);
+	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
 
 	// Generate an EBO and bind it.
 	unsigned int ebo;
@@ -56,7 +74,6 @@ Mesh::Mesh(const std::string& path)
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
 }
 
 void Mesh::translate(const glm::vec3& position)
@@ -71,15 +88,16 @@ void Mesh::rotate(float speed, const glm::vec3& direction)
 
 void Mesh::render(Camera& camera)
 {
+	glm::mat4 mvp = camera.getProjection() * camera.getView() * transform.getModel();
+
+	material.use();
+
 	// Bind the VAO
 	glBindVertexArray(vao);
 
-	glUseProgram(material.getProgram());
+	glUniformMatrix4fv(material.getMvp(), 1, GL_FALSE, &mvp[0][0]);
 
-	glUniformMatrix4fv(material.getmmID(), 1, GL_FALSE, &transform.getModel()[0][0]);
-	glUniformMatrix4fv(material.getvmID(), 1, GL_FALSE, &camera.view[0][0]);
-	glUniformMatrix4fv(material.getpmID(), 1, GL_FALSE, &camera.projection[0][0]);
-	glUniform3f(material.getColor(), 0.0f, 1.0f, 0.0f);
+	glUniform3f(material.getColor(), color.x, color.y, color.z);
 
 	// Draw the mesh using the indices in the EBO
 	glDrawElements(GL_TRIANGLES, objLoader.getIndices().size(), GL_UNSIGNED_INT, nullptr);

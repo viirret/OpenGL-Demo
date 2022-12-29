@@ -10,7 +10,7 @@ Window::Window(const std::string& title)
 	{
         std::cerr << "Error: Could not initialize SDL: " << SDL_GetError() << std::endl;
 		return;
-    }
+    } 
 
 	// get monitor size
 	SDL_DisplayMode display;
@@ -43,6 +43,12 @@ Window::Window(const std::string& title)
 	// update window size
 	SDL_GetWindowSize(window, &size.x, &size.y);	
 	DBG_LOG("window created\n");
+
+	// Lock the mouse to the window
+    SDL_SetWindowGrab(window, SDL_TRUE);
+
+    // Enable relative mouse mode
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
 Window::~Window()

@@ -1,21 +1,11 @@
 #include "Program.hh"
 
 #include <GL/glew.h>
+#include <SDL2/SDL.h>
 
 Program::Program() : 
 	running(true), window(""),
-	camera(
-			glm::lookAt(
-			glm::vec3(0, 0, 10),
-			glm::vec3(0, 0, 0),
-			glm::vec3(0, 1, 0)
-	),
-			glm::perspective(
-			glm::radians(45.0f), 
-			4.0f / 3.0f,
-			0.1f,
-			100.0f
-	)),
+	camera(),
 	scene(camera)
 {
 	// give a nice background
@@ -37,21 +27,7 @@ void Program::update()
 void Program::updateCamera()
 {
 	if(isMoving) 
-	{
-		// get copy of the old view
-		glm::mat4 view = camera.view;
-
-		// update the camera's position using the velocity
-		view[3][0] += velocity.x * elapsedTime;
-		view[3][2] += velocity.z * elapsedTime;
-
-		// smooth out the camera's movement using a low-pass filter
-		const float alpha = 0.1f;
-		view[3][0] = view[3][0] * (1.0f - alpha) + camera.view[3][0] * alpha;
-		view[3][2] = view[3][2] * (1.0f - alpha) + camera.view[3][2] * alpha;
-
-		camera.setView(view);
-	}
+		camera.translate(cameraPosition);
 }
 
 void Program::updateTime()
@@ -89,22 +65,21 @@ void Program::trackEvents()
 			switch(e.key.keysym.sym)
 			{
 				case SDLK_ESCAPE: running = false; break;
+
 				case SDLK_w: 
-					velocity.z += 0.001f * elapsedTime; 
+					cameraPosition = glm::vec3(0.0f, 0.0f, -0.1f);
 					isMoving = true;
 					break;
 				case SDLK_s: 
-					velocity.z -= 0.001f * elapsedTime; 
+					cameraPosition = glm::vec3(0.0f, 0.0f, 0.1f);
 					isMoving = true;
 					break;
-
-				// this is the correct order of these but it still feels like it's going the other ws going the other way
 				case SDLK_a: 
-					velocity.x -= 0.001f * elapsedTime;
+					cameraPosition = glm::vec3(-0.1f, 0.0f, 0.0f);
 					isMoving = true;
 					break;
 				case SDLK_d: 
-					velocity.x += 0.001f * elapsedTime; 
+					cameraPosition = glm::vec3(0.1f, 0.0f, 0.0f);
 					isMoving = true;
 					break;
 			}
@@ -113,8 +88,21 @@ void Program::trackEvents()
 		// stop movement
 		else if(e.type == SDL_KEYUP)
 		{
-			velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 			isMoving = false;
+			cameraPosition = glm::vec3(0.0f);
+		}
+
+		else if(e.type == SDL_MOUSEMOTION)
+		{
+
+			// Get the mouse movement deltas
+			int deltaX = e.motion.x - mouseX;
+			mouseX = e.motion.x;
+
+			int deltaY = e.motion.y - mouseY;
+			mouseY = e.motion.y;
+
+			camera.processMouseMovement(deltaX, deltaY);
 		}
 	}
 }

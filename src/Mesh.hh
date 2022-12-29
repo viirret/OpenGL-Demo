@@ -10,14 +10,17 @@
 class Mesh
 {
 public:
-	Mesh();
+	Mesh(const glm::vec3& color);
 	Mesh(const std::string& path);
+	Mesh(const std::string& path, const glm::vec3& color);
 
 	virtual void render(Camera& camera);
 	void translate(const glm::vec3& position);
 	void rotate(float speed, const glm::vec3& direction);
 
 protected:
+	void createObject();
+	glm::vec3 color;
 	unsigned int vao;
 
 	Material material;

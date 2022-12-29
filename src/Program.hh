@@ -24,7 +24,6 @@ private:
 	SDL_Event e;
 
 	// camera's velocity
-	glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	bool isMoving = false;
 
 	// variables for updating time
@@ -32,4 +31,10 @@ private:
 	int lastTime = SDL_GetTicks();
 	int currentTime;
 	int elapsedTime;
+
+	// mouse movement
+	int mouseX = 0;
+	int mouseY = 0;
+
+	glm::vec3 cameraPosition;
 };

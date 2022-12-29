@@ -12,5 +12,8 @@ public:
 private:
 	Camera& camera;
 	Mesh bunny;
+	Mesh bunny2;
+	Mesh dino;
+	Cube cube;
 };
 
