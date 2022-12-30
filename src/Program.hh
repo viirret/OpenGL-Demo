@@ -32,9 +32,6 @@ private:
 	int currentTime;
 	int elapsedTime;
 
-	// mouse movement
-	int mouseX = 0;
-	int mouseY = 0;
-
 	glm::vec3 cameraPosition;
+    const float cameraSpeed = 0.05f; // adjust accordingly
 };

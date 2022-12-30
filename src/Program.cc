@@ -10,6 +10,9 @@ Program::Program() :
 {
 	// give a nice background
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
+	
+	glEnable(GL_DEPTH_TEST);
+
 	while(running)
 	{
 		update();
@@ -44,7 +47,7 @@ void Program::updateTime()
 
 void Program::render()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	scene.update();
 
@@ -94,15 +97,7 @@ void Program::trackEvents()
 
 		else if(e.type == SDL_MOUSEMOTION)
 		{
-
-			// Get the mouse movement deltas
-			int deltaX = e.motion.x - mouseX;
-			mouseX = e.motion.x;
-
-			int deltaY = e.motion.y - mouseY;
-			mouseY = e.motion.y;
-
-			camera.processMouseMovement(deltaX, deltaY);
+			camera.processMouseMovement(e.motion.xrel, e.motion.yrel);
 		}
 	}
 }

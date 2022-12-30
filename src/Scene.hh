@@ -3,6 +3,8 @@
 #include "Cube.hh"
 #include "Camera.hh"
 
+#include <memory>
+
 class Scene
 {
 public:
@@ -14,6 +16,8 @@ private:
 	Mesh bunny;
 	Mesh bunny2;
 	Mesh dino;
-	Cube cube;
+	Mesh dino2;
+
+	std::vector<std::unique_ptr<Cube>> floor;
 };
 

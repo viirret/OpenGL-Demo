@@ -30,6 +30,8 @@ public:
 
 	const glm::mat4& getView() { return view; }
 	const glm::mat4& getProjection() { return projection; }
+	const glm::vec3& getFront() { return front; }
+	const glm::vec3& getUp() { return up; }
 
 	// processes input received from a mouse input system. Expects the offset value in both the x and y direction.
     void processMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
@@ -56,5 +58,4 @@ private:
 
     // calculates the front vector from the Camera's (updated) Euler Angles
     void updateCameraVectors();
-
 };

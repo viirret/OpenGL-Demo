@@ -1,43 +1,35 @@
 #include "Mesh.hh"
 
+#include <SDL2/SDL.h>
+
 #include <iostream>
 
-Mesh::Mesh(const glm::vec3& color)
+Mesh::Mesh(const glm::vec3& color, const std::string& texturePath, const std::string& objPath)
+	: 	material("../shaders/vertex.vert", "../shaders/frag.frag"),
+		transform(),
+		objLoader(objPath),
+		color(color),
+		tex(texturePath)
+{
+	createObject();
+}
+
+Mesh::Mesh(const std::string& texturePath, const std::string& objPath) 
+	: Mesh(glm::vec3(1.0f, 1.0f, 1.0f), texturePath, objPath)
+{
+}
+
+Mesh::Mesh(const glm::vec3& color, const std::string& texturePath)
 	: 	material("../shaders/vertex.vert", "../shaders/frag.frag"),
 		transform(),
 		objLoader(),
-		color(color)
+		color(color),
+		tex(texturePath)
 {
-}
-
-
-Mesh::Mesh(const std::string& path)
-	: 	material("../shaders/vertex.vert", "../shaders/frag.frag"),
-		transform(),
-		objLoader(path),
-		color(1.0f, 1.0f, 1.0f)
-{
-	createObject();
-}
-
-
-Mesh::Mesh(const std::string& path, const glm::vec3& color)
-	: 	material("../shaders/vertex.vert", "../shaders/frag.frag"),
-		transform(),
-		objLoader(path),
-		color(color)
-{
-	createObject();
 }
 
 void Mesh::createObject()
 {
-	// get the vertices, normals, texture coordinates, and indices from the OBJ file.
-	const std::vector<glm::vec3>& vertices = objLoader.getVertices();
-	const std::vector<glm::vec3>& normals = objLoader.getNormals();
-	const std::vector<glm::vec2>& uvs = objLoader.getUVs();
-	const std::vector<unsigned int>& indices = objLoader.getIndices();
-
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
@@ -86,19 +78,33 @@ void Mesh::rotate(float speed, const glm::vec3& direction)
 	transform.rotate(speed, direction);
 }
 
+void Mesh::scale(const glm::vec3& scale)
+{
+	transform.scale(scale);
+}
+
 void Mesh::render(Camera& camera)
 {
 	glm::mat4 mvp = camera.getProjection() * camera.getView() * transform.getModel();
 
 	material.use();
 
+	if(tex.path != "")
+	{	
+		glBindTexture(GL_TEXTURE_2D, tex.texture);
+	}
+	else
+	{
+		DBG_LOG("NO PATH");
+	}
+
 	// Bind the VAO
 	glBindVertexArray(vao);
 
 	glUniformMatrix4fv(material.getMvp(), 1, GL_FALSE, &mvp[0][0]);
 
-	glUniform3f(material.getColor(), color.x, color.y, color.z);
-
+	glUniform4f(material.getColor(), color.x, color.y, color.z, 0.0f);
+	
 	// Draw the mesh using the indices in the EBO
 	glDrawElements(GL_TRIANGLES, objLoader.getIndices().size(), GL_UNSIGNED_INT, nullptr);
 

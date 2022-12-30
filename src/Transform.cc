@@ -13,3 +13,8 @@ void Transform::rotate(float speed, const glm::vec3& direction)
 {
  	model = glm::rotate(model, speed, direction);
 }
+
+void Transform::scale(const glm::vec3& scale)
+{
+	model = glm::scale(model, scale);
+}

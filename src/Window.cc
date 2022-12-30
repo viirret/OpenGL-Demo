@@ -45,7 +45,7 @@ Window::Window(const std::string& title)
 	DBG_LOG("window created\n");
 
 	// Lock the mouse to the window
-    SDL_SetWindowGrab(window, SDL_TRUE);
+    SDL_SetWindowMouseGrab(window, SDL_TRUE);
 
     // Enable relative mouse mode
     SDL_SetRelativeMouseMode(SDL_TRUE);
