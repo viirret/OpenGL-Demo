@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 
 Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
-	: front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY), zoom(ZOOM),
+	: front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY),
 	position(position), worldUp(up), pitch(PITCH), yaw(YAW), view(glm::lookAt(position, position + front, up)),
 	projection(glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f))
 {

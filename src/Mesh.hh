@@ -30,12 +30,13 @@ protected:
 	ObjLoader objLoader;
 	Texture tex;
 
+private:
+	void createObject();
+
 	// get the vertices, normals, texture coordinates, and indices from the OBJ file.
 	const std::vector<glm::vec3>& vertices = objLoader.getVertices();
 	const std::vector<glm::vec3>& normals = objLoader.getNormals();
 	const std::vector<glm::vec2>& uvs = objLoader.getUVs();
 	const std::vector<unsigned int>& indices = objLoader.getIndices();
 
-private:
-	void createObject();
 };

@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+// default constructor for created objects
 Mesh::Mesh(const glm::vec3& color, const std::string& texturePath, const std::string& objPath)
 	: 	material("../shaders/vertex.vert", "../shaders/frag.frag"),
 		transform(),
@@ -14,11 +15,13 @@ Mesh::Mesh(const glm::vec3& color, const std::string& texturePath, const std::st
 	createObject();
 }
 
+// same constructor but with 1, 1, 1 color
 Mesh::Mesh(const std::string& texturePath, const std::string& objPath) 
 	: Mesh(glm::vec3(1.0f, 1.0f, 1.0f), texturePath, objPath)
 {
 }
 
+// constructor that Cube objects call
 Mesh::Mesh(const glm::vec3& color, const std::string& texturePath)
 	: 	material("../shaders/vertex.vert", "../shaders/frag.frag"),
 		transform(),
@@ -68,6 +71,8 @@ void Mesh::createObject()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+// transform functions 
+// this class could have inherited from Transform, but I chose to go like this
 void Mesh::translate(const glm::vec3& position)
 {
 	transform.translate(position);

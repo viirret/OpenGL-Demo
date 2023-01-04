@@ -9,7 +9,6 @@ class Scene
 {
 public:
 	Scene(Camera& camera);
-	~Scene();
 	void update();
 private:
 	Camera& camera;
@@ -17,7 +16,6 @@ private:
 	Mesh bunny2;
 	Mesh dino;
 	Mesh dino2;
-
-	std::vector<std::unique_ptr<Cube>> floor;
+	Cube floor;
 };
 

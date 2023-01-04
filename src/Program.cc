@@ -11,12 +11,12 @@ Program::Program() :
 	// give a nice background
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
 	
+	// enable depth testing
 	glEnable(GL_DEPTH_TEST);
 
+	// update program
 	while(running)
-	{
 		update();
-	}
 }
 
 void Program::update()
@@ -29,7 +29,7 @@ void Program::update()
 
 void Program::updateCamera()
 {
-	if(isMoving) 
+	if(isMoving)
 		camera.translate(cameraPosition);
 }
 
@@ -65,24 +65,32 @@ void Program::trackEvents()
 		// movement with WASD keys
 		else if(e.type == SDL_KEYDOWN)
 		{
+			glm::vec3 cameraFront;
+			cameraFront.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+			cameraFront.y = sin(glm::radians(camera.pitch));
+			cameraFront.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+			cameraFront = glm::normalize(cameraFront);
+
+			float cameraSpeed = 0.1f;
+		
 			switch(e.key.keysym.sym)
 			{
 				case SDLK_ESCAPE: running = false; break;
 
 				case SDLK_w: 
-					cameraPosition = glm::vec3(0.0f, 0.0f, -0.1f);
+					cameraPosition += cameraSpeed * cameraFront;
 					isMoving = true;
 					break;
 				case SDLK_s: 
-					cameraPosition = glm::vec3(0.0f, 0.0f, 0.1f);
+					cameraPosition -= cameraSpeed * cameraFront;
 					isMoving = true;
 					break;
 				case SDLK_a: 
-					cameraPosition = glm::vec3(-0.1f, 0.0f, 0.0f);
+					cameraPosition -= glm::normalize(glm::cross(cameraFront, camera.getUp())) * cameraSpeed;
 					isMoving = true;
 					break;
 				case SDLK_d: 
-					cameraPosition = glm::vec3(0.1f, 0.0f, 0.0f);
+					cameraPosition += glm::normalize(glm::cross(cameraFront, camera.getUp())) * cameraSpeed;
 					isMoving = true;
 					break;
 			}

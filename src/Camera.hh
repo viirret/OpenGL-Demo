@@ -4,21 +4,11 @@
 
 #include <glm/glm.hpp>
 
-// Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
-enum class Camera_Movement 
-{
-    FORWARD,
-    BACKWARD,
-    LEFT,
-    RIGHT
-};
-
 // Default camera values
 const float YAW = -90.0f;
 const float PITCH = 10.0f;
 const float SPEED = 1.0f;
 const float SENSITIVITY = 0.01f;
-const float ZOOM = 45.0f;
 
 class Camera : public Transform
 {
@@ -50,7 +40,6 @@ private:
     // camera options
     float movementSpeed;
     float mouseSensitivity;
-    float zoom;
 
 	glm::mat4 view;
 	glm::mat4 projection; 
