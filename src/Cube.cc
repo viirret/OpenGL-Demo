@@ -22,14 +22,15 @@ void Cube::create(std::vector<float>&& vertexBufferData, std::vector<float>&& uv
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
+	// vertexData
 	unsigned int vertexVBO;
 	glGenBuffers(1, &vertexVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
 	glBufferData(GL_ARRAY_BUFFER, vertexBufferData.size() * sizeof(float), &vertexBufferData[0], GL_STATIC_DRAW);
-
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
 
+	// texture coord data
 	unsigned int uvVBO;
 	glGenBuffers(1, &uvVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, uvVBO);
@@ -37,6 +38,7 @@ void Cube::create(std::vector<float>&& vertexBufferData, std::vector<float>&& uv
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(1);
 
+	// Unbind the VAO and VBOs.
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -44,37 +46,11 @@ void Cube::create(std::vector<float>&& vertexBufferData, std::vector<float>&& uv
 
 void Cube::render(Camera& camera)
 {
-	// calculate mvp
-	glm::mat4 mvp = camera.getProjection() * camera.getView() * transform.getModel();
-
-	material.use();
-
-	if(tex.path != "")
+	Mesh::renderOverrider(camera, [this]()
 	{
-		glBindTexture(GL_TEXTURE_2D, tex.texture);
-	}
-	else
-	{
-		DBG_LOG("NO PATH IN CUBE");
-	}
-
-	// bind the VAO
-	glBindVertexArray(vao);
-
-	// set mvp
-	glUniformMatrix4fv(material.getMvp(), 1, GL_FALSE, &mvp[0][0]);
-	
-	// set color
-	glUniform4f(material.getColor(), color.x, color.y, color.z, 0.0f);
-
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	// Unbind the VAO
-	glBindVertexArray(0);
-
-	glUseProgram(0);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	});
 }
-
 
 std::vector<float> Cube::createVertexBufferData()
 { 

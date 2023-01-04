@@ -11,7 +11,6 @@ public:
 	const unsigned int& getColor() const;
 
 	void use();
-
 private:
 	Shader shader;
 	unsigned int mvp;

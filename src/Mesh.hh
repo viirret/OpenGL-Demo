@@ -8,6 +8,8 @@
 
 #include <GL/glew.h>
 
+#include <functional>
+
 class Mesh
 {
 public:
@@ -16,11 +18,14 @@ public:
 	Mesh(const glm::vec3& color, const std::string& texturePath, const std::string& objPath);
 
 	virtual void render(Camera& camera);
+
 	void translate(const glm::vec3& position);
 	void rotate(float speed, const glm::vec3& direction);
 	void scale(const glm::vec3& scale);
 
 protected:
+	void renderOverrider(Camera& camera, std::function<void()> func);
+
 	unsigned int vao;
 	unsigned int texture;
 	glm::vec3 color;

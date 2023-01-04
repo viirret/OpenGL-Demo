@@ -16,6 +16,5 @@ private:
 	std::string vertexCode;
 	std::string fragmentCode;
 	void checkCompileErrors(unsigned int shader, std::string type);
-	
 };
 

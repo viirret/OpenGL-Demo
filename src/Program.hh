@@ -23,7 +23,7 @@ private:
 
 	SDL_Event e;
 
-	// camera's velocity
+	// is camera moving
 	bool isMoving = false;
 
 	// variables for updating time
@@ -32,6 +32,7 @@ private:
 	int currentTime;
 	int elapsedTime;
 
+	// copies of camera values
 	glm::vec3 cameraPosition;
-    const float cameraSpeed = 0.05f; // adjust accordingly
+	glm::vec3 cameraFrontVector;
 };

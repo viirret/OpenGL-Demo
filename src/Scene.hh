@@ -13,9 +13,9 @@ public:
 private:
 	Camera& camera;
 	Mesh bunny;
-	Mesh bunny2;
 	Mesh dino;
-	Mesh dino2;
 	Cube floor;
+
+	std::vector<std::unique_ptr<Cube>> smiley;
 };
 

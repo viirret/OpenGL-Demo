@@ -6,7 +6,8 @@
 Program::Program() : 
 	running(true), window(""),
 	camera(),
-	scene(camera)
+	scene(camera),
+	cameraPosition(glm::vec3(0.0f))
 {
 	// give a nice background
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
@@ -30,7 +31,7 @@ void Program::update()
 void Program::updateCamera()
 {
 	if(isMoving)
-		camera.translate(cameraPosition);
+		camera.translate(cameraPosition, cameraFrontVector);
 }
 
 void Program::updateTime()
@@ -65,32 +66,26 @@ void Program::trackEvents()
 		// movement with WASD keys
 		else if(e.type == SDL_KEYDOWN)
 		{
-			glm::vec3 cameraFront;
-			cameraFront.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
-			cameraFront.y = sin(glm::radians(camera.pitch));
-			cameraFront.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
-			cameraFront = glm::normalize(cameraFront);
+			cameraFrontVector = camera.getNewFrontVector();
 
-			float cameraSpeed = 0.1f;
-		
 			switch(e.key.keysym.sym)
 			{
 				case SDLK_ESCAPE: running = false; break;
 
 				case SDLK_w: 
-					cameraPosition += cameraSpeed * cameraFront;
+					cameraPosition += camera.getSpeed() * cameraFrontVector;
 					isMoving = true;
 					break;
 				case SDLK_s: 
-					cameraPosition -= cameraSpeed * cameraFront;
+					cameraPosition -= camera.getSpeed() * cameraFrontVector;
 					isMoving = true;
 					break;
 				case SDLK_a: 
-					cameraPosition -= glm::normalize(glm::cross(cameraFront, camera.getUp())) * cameraSpeed;
+					cameraPosition -= glm::normalize(glm::cross(cameraFrontVector, camera.getUp())) * camera.getSpeed();
 					isMoving = true;
 					break;
 				case SDLK_d: 
-					cameraPosition += glm::normalize(glm::cross(cameraFront, camera.getUp())) * cameraSpeed;
+					cameraPosition += glm::normalize(glm::cross(cameraFrontVector, camera.getUp())) * camera.getSpeed();
 					isMoving = true;
 					break;
 			}
@@ -103,6 +98,7 @@ void Program::trackEvents()
 			cameraPosition = glm::vec3(0.0f);
 		}
 
+		// move camera according to mouse
 		else if(e.type == SDL_MOUSEMOTION)
 		{
 			camera.processMouseMovement(e.motion.xrel, e.motion.yrel);
